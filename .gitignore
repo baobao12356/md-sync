@@ -1,0 +1,10 @@
+
+#
+# common ignores
+#
+.DS_Store
+node_modules
+bower_components
+npm-debug.log
+.idea
+package-lock.json

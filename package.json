@@ -1,0 +1,33 @@
+{
+  "name": "md-sync",
+  "version": "0.0.1",
+  "description": "Multiple destinations syncing(sync local files or directories to multiple destinations).",
+  "main": "index.js",
+  "bin": "bin/sync.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/senntyou/md-sync"
+  },
+  "keywords": [
+    "webpack",
+    "gulp",
+    "remote",
+    "server",
+    "sync",
+    "upload",
+    "ftp",
+    "sftp"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/senntyou/md-sync/issues"
+  },
+  "homepage": "https://github.com/senntyou/md-sync",
+  "readmeFilename": "README.md",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "vinyl-ftp": "^0.6.1"
+  }
+}

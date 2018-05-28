@@ -28,6 +28,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "vinyl-ftp": "^0.6.1"
+    "chalk": "^2.4.1",
+    "gulp": "git://github.com/gulpjs/gulp#6d71a65",
+    "gulp-sftp": "^0.1.5"
   }
 }

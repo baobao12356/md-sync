@@ -1,8 +1,8 @@
 
 const path = require('path');
-const ftp = require('vinyl-ftp');
-
-const defaultSrcOption = { buffer: false };
+const chalk = require('chalk');
+const gulp = require('gulp');
+const sftp = require('gulp-sftp');
 
 /**
  * project config
@@ -10,9 +10,8 @@ const defaultSrcOption = { buffer: false };
  * [
  *   {
  *     src: '',
- *     srcOption: {},
- *     dest: '',
- *     ftpOption: {}
+ *     srcOptions: {},
+ *     syncOptions: {}
  *   }
  * ]
  *
@@ -21,26 +20,32 @@ const defaultSrcOption = { buffer: false };
 let configs = require(path.join(process.cwd(), 'md-sync.config.js'));
 !Array.isArray(configs) && (configs = [configs]);
 
-const connections = [];
-configs.forEach(item => {
-    connections.push(ftp.create(item.ftpOption));
+let tasks = [cb => {
+    console.log(chalk.green(`
+    md-sync start syncing.
+    `));
+
+    cb && cb();
+}];
+
+for (let i = 0; i < configs.length; i++) {
+    tasks.push(() => {
+        let config = configs[i];
+
+        return gulp.src(config.src, config.srcOptions || {})
+            .pipe(sftp(config.syncOptions));
+    });
+}
+
+tasks.push(cb => {
+    // waiting for connection closing
+    setTimeout(() => {
+        console.log(chalk.green(`
+    md-sync complete all syncing tasks successfully.
+    `));
+
+        cb && cb();
+    }, 200);
 });
 
-// current running connection index
-let runIndex = 0;
-let run = () => {
-    let conn = connections[runIndex];
-    let config = configs[runIndex];
-
-    conn.src(config.src, config.srcOption || defaultSrcOption)
-        .pipe(conn.dest(config.dest))
-        .on('end', () => {
-            // is the last conn
-            if (runIndex >= configs.length - 1) return;
-
-            runIndex += 1;
-            run();
-        });
-};
-
-run();
+gulp.series(tasks)();

@@ -32,6 +32,7 @@ for (let i = 0; i < configs.length; i++) {
     tasks.push(() => {
         let config = configs[i];
 
+        // option.callback can't work properly, after it, there also has messages printed on the screen
         return gulp.src(config.src, config.srcOptions || {})
             .pipe(sftp(config.syncOptions));
     });

@@ -1,4 +1,4 @@
-# md-sync changelog
+# Changelog
 
 ## 0.0.1
 

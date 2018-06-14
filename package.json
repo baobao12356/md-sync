@@ -1,6 +1,6 @@
 {
   "name": "md-sync",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Multiple destinations syncing(sync local files or directories to multiple destinations).",
   "main": "index.js",
   "bin": "bin/sync.js",
@@ -14,9 +14,7 @@
     "remote",
     "server",
     "sync",
-    "upload",
-    "ftp",
-    "sftp"
+    "upload"
   ],
   "license": "MIT",
   "bugs": {
@@ -29,7 +27,7 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
-    "gulp": "git://github.com/gulpjs/gulp#6d71a65",
-    "gulp-sftp": "^0.1.5"
+    "gulp": "^4.0.0",
+    "gulp-ssh": "^0.7.0"
   }
 }

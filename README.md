@@ -4,7 +4,7 @@ Multiple destinations syncing(sync local files or directories to multiple destin
 
 ## note
 
-1. Currently, only support `sftp` protocol.
+1. Currently, only support [gulp-ssh](https://github.com/teambition/gulp-ssh).
 
 ## install
 
@@ -31,15 +31,17 @@ module.exports = [
     // first destination
     {
         src: './src/**/*',
+        remotePath: 'remotePath',
         srcOptions: {
             ...
         },
         syncOptions: {
-            host: 'host',
-            user: 'user',
-            pass: 'pass',
-            remotePath: 'remotePath',
-            ...
+            ignoreErrors: true,
+            sshConfig: {
+                host: 'host',
+                username: 'username',
+                password: 'password'
+            }
         }
     },
     // second destination
@@ -48,9 +50,9 @@ module.exports = [
 ```
 
 1. `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
+1. `remotePath`: Remote server path.
 2. `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-3. `syncOptions`: options for initializing syncing
-    1. `sftp`: [gulp sftp](https://github.com/gtg092x/gulp-sftp)
+3. `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
 
 ## do syncing
 

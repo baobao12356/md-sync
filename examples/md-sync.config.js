@@ -1,26 +1,24 @@
 
-let syncOptions = require('./md-sync.server.config');
+let sshConfig = require('./md-sync.server.config');
+let syncOptions = {
+    ignoreErrors: true,
+    sshConfig
+};
 
 module.exports = [
     {
         src: './src/**/*',
-        syncOptions: {
-            ...syncOptions,
-            remotePath: '/home/senntyou/space/www/ftp/src/'
-        }
+        remotePath: '/home/senntyou/space/www/ftp/src/',
+        syncOptions
     },
     {
         src: './src/dir1/**/*',
-        syncOptions: {
-            ...syncOptions,
-            remotePath: '/home/senntyou/space/www/ftp/dir1/'
-        }
+        remotePath: '/home/senntyou/space/www/ftp/dir1/',
+        syncOptions
     },
     {
         src: './src/dir2/**/*',
-        syncOptions: {
-            ...syncOptions,
-            remotePath: '/home/senntyou/space/www/ftp/dir2/'
-        }
+        remotePath: '/home/senntyou/space/www/ftp/dir2/',
+        syncOptions
     }
 ];

@@ -2,14 +2,15 @@
 const path = require('path');
 const chalk = require('chalk');
 const gulp = require('gulp');
-const sftp = require('gulp-sftp');
+const SSH = require('gulp-ssh');
 
 /**
- * project config
+ * Project config.
  *
  * [
  *   {
  *     src: '',
+ *     remotePath: '',
  *     srcOptions: {},
  *     syncOptions: {}
  *   }
@@ -32,21 +33,19 @@ for (let i = 0; i < configs.length; i++) {
     tasks.push(() => {
         let config = configs[i];
 
-        // option.callback can't work properly, after it, there also has messages printed on the screen
+        let connect = new SSH(config.syncOptions);
+
         return gulp.src(config.src, config.srcOptions || {})
-            .pipe(sftp(config.syncOptions));
+            .pipe(connect.dest(config.remotePath));
     });
 }
 
 tasks.push(cb => {
-    // waiting for connection closing
-    setTimeout(() => {
-        console.log(chalk.green(`
-    md-sync complete all syncing tasks successfully.
+    console.log(chalk.green(`
+    md-sync finish all syncing tasks successfully.
     `));
 
-        cb && cb();
-    }, 200);
+    cb && cb();
 });
 
 gulp.series(tasks)();

@@ -50,9 +50,9 @@ module.exports = [
 ```
 
 1. `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-1. `remotePath`: Remote server path.
-2. `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-3. `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
+2. `remotePath`: Remote server path.
+3. `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
+4. `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
 
 ## do syncing
 

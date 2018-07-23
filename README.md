@@ -4,7 +4,7 @@ Multiple destinations syncing(sync local files or directories to multiple destin
 
 ## note
 
-1. Currently, only support [gulp-ssh](https://github.com/teambition/gulp-ssh).
+1.  Currently, only support [gulp-ssh](https://github.com/teambition/gulp-ssh).
 
 ## install
 
@@ -49,10 +49,10 @@ module.exports = [
 ];
 ```
 
-1. `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-2. `remotePath`: Remote server path.
-3. `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-4. `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
+1.  `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
+2.  `remotePath`: Remote server path.
+3.  `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
+4.  `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
 
 ## do syncing
 

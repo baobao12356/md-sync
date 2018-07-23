@@ -4,7 +4,7 @@ let syncOptions = {
   sshConfig
 };
 
-let cache = !1;
+let cache = !0;
 
 module.exports = [
   {

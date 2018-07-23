@@ -22,7 +22,7 @@ module.exports = options => {
     }
 
     const record = data.record[mark];
-    const fileDisplay = path.relative(file.path, file.base);
+    const fileDisplay = path.relative(file.base, file.path);
     const hash = md5(file.contents, 'hex');
 
     // changed

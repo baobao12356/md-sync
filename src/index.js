@@ -1,8 +1,15 @@
 const path = require('path');
 const chalk = require('chalk');
+const fse = require('fs-extra');
 
 // Ensure `data` get `projectRoot`.
-require('./data');
+const data = require('./data');
+
+console.log(
+  chalk.green(`
+  md-sync start syncing.
+  `)
+);
 
 const argv = process.argv;
 
@@ -17,6 +24,11 @@ require('gulp-cli')(err => {
     );
     console.error(chalk.red(err.stack || err));
   } else {
+    // Flush record to file.
+    Object.keys(data.record).forEach(key => {
+      fse.outputFileSync(path.join(data.workspace, `${key}.json`), JSON.stringify(data.record[key] || {}));
+    });
+
     console.log(
       chalk.green(`
   md-sync finish all syncing tasks successfully.

@@ -1,20 +1,20 @@
 const fs = require('fs');
 const path = require('path');
-const chalk = require('chalk');
 const gulp = require('gulp');
 const SSH = require('gulp-ssh');
 const fse = require('fs-extra');
 
 const pre = require('./pre');
+const post = require('./post');
 const data = require('./data');
 const cache = require('./cache');
 
-fse.ensureDirSync(data.workspace);
-
-// Pre-get existed cache records.
-fs.readdirSync(data.workspace).filter(file => {
-  data.record[file.split('.')[0]] = require(path.join(data.workspace, file));
-});
+if (fs.existsSync(data.workspace)) {
+  // Pre-get existed cache records.
+  fs.readdirSync(data.workspace).filter(file => {
+    data.record[file.split('.')[0]] = require(path.join(data.workspace, file));
+  });
+}
 
 /**
  * Project config.
@@ -37,33 +37,32 @@ let configs = require(path.join(data.projectRoot, 'md-sync.config.js'));
 let tasks = [];
 
 for (let i = 0; i < configs.length; i++) {
-  tasks.push(pre(configs[i].syncOptions.sshConfig.host), () => {
-    let config = configs[i];
+  tasks.push(
+    pre(configs[i].syncOptions.sshConfig.host),
+    function md_sync_upload() {
+      let config = configs[i];
 
-    let connect = new SSH(config.syncOptions);
+      // `gulp-cli` will modify process.cwd().
+      config.src = path.join(data.projectRoot, config.src);
 
-    if (config.cache) {
-      // Ensure `record[i]`.
-      if (!data.record[i]) data.record[i] = {};
+      let connect = new SSH(config.syncOptions);
 
-      return gulp
-        .src(config.src, config.srcOptions || {})
-        .pipe(cache({ mark: i }))
-        .pipe(connect.dest(config.remotePath));
-    }
+      if (config.cache) {
+        fse.ensureDirSync(data.workspace);
 
-    return gulp.src(config.src, config.srcOptions || {}).pipe(connect.dest(config.remotePath));
-  });
-}
+        // Ensure `record[i]`.
+        if (!data.record[i]) data.record[i] = {};
 
-tasks.push(cb => {
-  console.log(
-    chalk.green(`
-  md-sync finish all syncing tasks successfully.
-  `)
+        return gulp
+          .src(config.src, config.srcOptions || {})
+          .pipe(cache({ mark: i }))
+          .pipe(connect.dest(config.remotePath));
+      }
+
+      return gulp.src(config.src, config.srcOptions || {}).pipe(connect.dest(config.remotePath));
+    },
+    post(configs[i], i)
   );
-
-  cb && cb();
-});
+}
 
 gulp.task('md-sync', gulp.series(tasks));

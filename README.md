@@ -24,7 +24,7 @@ npm install --save-dev md-sync
 
 ## add config
 
-In `md-sync.config.js` of project root.
+Add `md-sync.config.js` file to your project root.
 
 ```
 module.exports = [
@@ -42,7 +42,8 @@ module.exports = [
                 username: 'username',
                 password: 'password'
             }
-        }
+        },
+        cache: true
     },
     // second destination
     ...
@@ -53,6 +54,15 @@ module.exports = [
 2.  `remotePath`: Remote server path.
 3.  `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
 4.  `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
+5.  `cache`: Whether cache files' changing record, thus next time only upload changed files.
+
+## update `.gitignore`
+
+```
+# ignore md-sync workspace
+
+.md-sync
+```
 
 ## do syncing
 

@@ -2,7 +2,7 @@
 
 ## 0.1.1 [2018-07-23]
 
-- Add `eslint`.
+- Add `cache` config option.
 
 ## 0.1.0 [2018-06-14]
 

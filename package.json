@@ -2,7 +2,7 @@
   "name": "md-sync",
   "version": "0.1.1-alpha.1",
   "description": "Multiple destinations syncing(sync local files or directories to multiple destinations).",
-  "main": "index.js",
+  "main": "src/index.js",
   "bin": "bin/sync.js",
   "repository": {
     "type": "git",
@@ -31,12 +31,16 @@
   },
   "dependencies": {
     "chalk": "^2.4.1",
+    "crypto-md5": "^1.0.0",
+    "fs-extra": "^7.0.0",
     "gulp": "^4.0.0",
-    "gulp-ssh": "^0.7.0"
+    "gulp-cli": "git://github.com/senntyou/gulp-cli.git#6f9e0ef",
+    "gulp-ssh": "^0.7.0",
+    "plugin-error": "^1.0.1",
+    "through2": "^2.0.3"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "eslint-config-prettier": "^2.9.0",
     "eslint-plugin-prettier": "^2.6.2",
     "eslint-plugin-jest": "^21.17.0",
     "eslint-plugin-node": "^6.0.1",

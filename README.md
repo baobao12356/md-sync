@@ -64,6 +64,36 @@ module.exports = [
 .md-sync
 ```
 
+## multiple server environments
+
+If you need to support multiple server environments(test, gray, prod), you can do like this:
+
+```
+# package.json
+
+"scripts": {
+    "sync:test": "md-sync --env test",
+    "sync:gray": "md-sync --env gray",
+    "sync:prod": "md-sync --env prod"
+}
+```
+
+With [minimist](https://github.com/substack/minimist).
+
+```
+# md-sync.config.js
+
+const argv = require('minimist')(process.argv.slice(2));
+
+const envOptions = {
+  test: testOptions,
+  gray: grayOptions,
+  prod: prodOptions
+};
+
+module.exports = envOptions[argv.env];
+```
+
 ## do syncing
 
 ```

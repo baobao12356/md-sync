@@ -43,7 +43,8 @@ module.exports = [
                 password: 'password'
             }
         },
-        cache: true
+        cache: true/false,
+        cacheFile: '[index].json'
     },
     // second destination
     ...
@@ -54,7 +55,10 @@ module.exports = [
 2.  `remotePath`: Remote server path.
 3.  `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
 4.  `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
-5.  `cache`: Whether cache files' changing record, thus next time only upload changed files.
+5.  `cache`: Whether cache files' changing record, thus next time only upload changed files. 
+    - `default`: `true`.
+6.  `cacheFile`: File to record cache hash codes.
+    - `default`: `[index].json`, `[index]` means destination index.    
 
 ## update `.gitignore`
 
@@ -86,9 +90,21 @@ With [minimist](https://github.com/substack/minimist).
 const argv = require('minimist')(process.argv.slice(2));
 
 const envOptions = {
-  test: testOptions,
-  gray: grayOptions,
-  prod: prodOptions
+  test: {
+    ...,
+    
+    cacheFile: 'test-[index].json'
+  },
+  gray: {
+    ...,
+      
+    cacheFile: 'gray-[index].json'
+  },
+  prod: {
+    ...,
+        
+    cacheFile: 'prod-[index].json'
+  }
 };
 
 module.exports = envOptions[argv.env];

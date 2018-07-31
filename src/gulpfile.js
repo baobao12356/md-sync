@@ -12,7 +12,7 @@ const cache = require('./cache');
 if (fs.existsSync(data.workspace)) {
   // Pre-get existed cache records.
   fs.readdirSync(data.workspace).filter(file => {
-    data.record[file.split('.')[0]] = require(path.join(data.workspace, file));
+    data.record[file.slice(0, -5)] = require(path.join(data.workspace, file));
   });
 }
 
@@ -24,8 +24,9 @@ if (fs.existsSync(data.workspace)) {
  *     src: '',
  *     remotePath: '',
  *     srcOptions: {},
- *     syncOptions: {}
- *     cache: true/false
+ *     syncOptions: {},
+ *     cache: true/false, // default: true
+ *     cacheFile: '[index].json', // default: '[index].json'
  *   }
  * ]
  *
@@ -34,14 +35,23 @@ if (fs.existsSync(data.workspace)) {
 let configs = require(path.join(data.projectRoot, 'md-sync.config.js'));
 !Array.isArray(configs) && (configs = [configs]);
 
+configs.forEach((item, index) => {
+  if (typeof item.cache === 'undefined') item.cache = !0;
+  if (typeof item.cacheFile === 'undefined') item.cacheFile = '[index].json';
+
+  if (item.cacheFile.slice(-5) === '.json') item.cacheFile = item.cacheFile.slice(0, -5);
+
+  item.cacheFile = item.cacheFile.replace('[index]', index);
+});
+
 let tasks = [];
 
 for (let i = 0; i < configs.length; i++) {
-  tasks.push(
-    pre(configs[i].syncOptions.sshConfig.host),
-    function md_sync_upload() {
-      let config = configs[i];
+  let config = configs[i];
 
+  tasks.push(
+    pre(config.syncOptions.sshConfig.host),
+    function md_sync_upload() {
       // `gulp-cli` will modify process.cwd().
       config.src = path.join(data.projectRoot, config.src);
 
@@ -55,13 +65,13 @@ for (let i = 0; i < configs.length; i++) {
 
         return gulp
           .src(config.src, config.srcOptions || {})
-          .pipe(cache({ mark: i }))
+          .pipe(cache({ filename: config.cacheFile }))
           .pipe(connect.dest(config.remotePath));
       }
 
       return gulp.src(config.src, config.srcOptions || {}).pipe(connect.dest(config.remotePath));
     },
-    post(configs[i], i)
+    post(config)
   );
 }
 

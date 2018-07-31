@@ -1,6 +1,6 @@
 {
   "name": "md-sync",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Multiple destinations syncing(sync local files or directories to multiple destinations).",
   "main": "src/index.js",
   "bin": "bin/sync.js",

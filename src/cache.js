@@ -8,7 +8,7 @@ const data = require('./data');
 module.exports = options => {
   options = options || {};
 
-  const { mark = 0 } = options;
+  const { filename } = options;
 
   return through.obj(function(file, enc, cb) {
     if (file.isNull()) {
@@ -21,7 +21,9 @@ module.exports = options => {
       return cb();
     }
 
-    const record = data.record[mark];
+    if (!data.record[filename]) data.record[filename] = {};
+
+    const record = data.record[filename];
     const fileDisplay = path.relative(file.base, file.path);
     const hash = md5(file.contents, 'hex');
 

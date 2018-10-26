@@ -1,117 +1,50 @@
-# md-sync
+# sclean
 
-Multiple destinations syncing(sync local files or directories to multiple destinations).
+A tool to clean obsolete hash-coded files, which created by building tools, like webpack, gulp.
 
-## note
+## quick start
 
-1.  Currently, only support [gulp-ssh](https://github.com/teambition/gulp-ssh).
-
-## install
+Install sclean:
 
 ```
-npm install --save-dev md-sync
+npm install sclean -g
 ```
 
-## add command
+## command line
 
 ```
-# package.json
-
-"scripts": {
-    "sync": "md-sync"
-}
+sclean <command> [args]
 ```
 
-## add config
-
-Add `md-sync.config.js` file to your project root.
+### `archive`: archive target directory to a zip file
 
 ```
-module.exports = [
-    // first destination
-    {
-        src: './src/**/*',
-        remotePath: 'remotePath',
-        srcOptions: {
-            ...
-        },
-        syncOptions: {
-            ignoreErrors: true,
-            sshConfig: {
-                host: 'host',
-                username: 'username',
-                password: 'password'
-            }
-        },
-        cache: true/false,
-        cacheFile: '[index].json'
-    },
-    // second destination
-    ...
-];
+sclean archive <directory>
 ```
 
-1.  `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-2.  `remotePath`: Remote server path.
-3.  `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-4.  `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
-5.  `cache`: Whether cache files' changing record, thus next time only upload changed files. 
-    - `default`: `true`.
-6.  `cacheFile`: File to record cache hash codes.
-    - `default`: `[index].json`, `[index]` means destination index.    
-
-## update `.gitignore`
+### `restore`: restore target directory to last nth archive state
 
 ```
-# ignore md-sync workspace
-
-.md-sync
+sclean restore <directory> [--index index]
 ```
 
-## multiple server environments
+- `index/i`: `int`, default `1`, last nth state to restore
 
-If you need to support multiple server environments(test, gray, prod), you can do like this:
-
-```
-# package.json
-
-"scripts": {
-    "sync:test": "md-sync --env test",
-    "sync:gray": "md-sync --env gray",
-    "sync:prod": "md-sync --env prod"
-}
-```
-
-With [minimist](https://github.com/substack/minimist).
+### `clean`: clean obsolete hash-code files
 
 ```
-# md-sync.config.js
-
-const argv = require('minimist')(process.argv.slice(2));
-
-const envOptions = {
-  test: {
-    ...,
-    
-    cacheFile: 'test-[index].json'
-  },
-  gray: {
-    ...,
-      
-    cacheFile: 'gray-[index].json'
-  },
-  prod: {
-    ...,
-        
-    cacheFile: 'prod-[index].json'
-  }
-};
-
-module.exports = envOptions[argv.env];
+sclean clean <directory> [--ext ext] [--hash hash]
 ```
 
-## do syncing
+- `ext/e`: `string`, default `html`, html extension
+- `hash/H`: `int`, default `32`, hash length
 
-```
-npm run sync
-```
+## philosophy of cleaning obsolete files
+
+1. find all hash codes from html files (hashes1)
+2. find all hash codes from js files whose file name matches hashes1 (hashes2, async js bundles)
+3. delete js and css files whose file name neither matches hashes1 nor hashes2
+
+## addition
+
+- sclean only clean js and css files, not other static files

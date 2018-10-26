@@ -1,50 +1,90 @@
-# sclean
+# md-sync
 
-A tool to clean obsolete hash-coded files, which created by building tools, like webpack, gulp.
+Multiple destinations syncing(sync local files or directories to multiple destinations).
 
-## quick start
-
-Install sclean:
+## install
 
 ```
-npm install sclean -g
+npm install md-sync --save-dev
 ```
 
-## command line
+**_package.json_**
 
 ```
-sclean <command> [args]
+"scripts": {
+  "sync": "md-sync"
+}
 ```
 
-### `archive`: archive target directory to a zip file
+## config
+
+Add a `md-sync.config.js` file to your project root.
 
 ```
-sclean archive <directory>
+module.exports = [
+  // first destination
+  {
+    src: [globs, options],
+    remotePath: 'remotePath',
+    server: {
+      ignoreErrors: true,
+      sshConfig: {
+        host: 'host',
+        username: 'username',
+        password: 'password'
+      }
+    },
+  },
+  // second destination
+  ...
+];
 ```
 
-### `restore`: restore target directory to last nth archive state
+1.  `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v4.0.0/docs/API.md#gulpsrcglobs-options) args
+2.  `remotePath`: remote server path
+3.  `server`: options for [gulp-ssh](https://github.com/teambition/gulp-ssh)
+
+**_multiple server environments_**
+
+If you need to support multiple server environments(`test`, `gray`, `prod`), you can do like this:
 
 ```
-sclean restore <directory> [--index index]
+# package.json
+
+"scripts": {
+  "sync:test": "md-sync --env test",
+  "sync:gray": "md-sync --env gray",
+  "sync:prod": "md-sync --env prod"
+}
 ```
 
-- `index/i`: `int`, default `1`, last nth state to restore
-
-### `clean`: clean obsolete hash-code files
+With [minimist](https://github.com/substack/minimist).
 
 ```
-sclean clean <directory> [--ext ext] [--hash hash]
+# md-sync.config.js
+
+const argv = require('minimist')(process.argv.slice(2));
+
+const configs = {
+  test: [
+    { ... },
+    ...
+  ],
+  gray: [
+    { ... },
+    ...
+  ],
+  prod: [
+    { ... },
+    ...
+  ],
+};
+
+module.exports = configs[argv.env];
 ```
 
-- `ext/e`: `string`, default `html`, html extension
-- `hash/H`: `int`, default `32`, hash length
+## do syncing
 
-## philosophy of cleaning obsolete files
-
-1. find all hash codes from html files (hashes1)
-2. find all hash codes from js files whose file name matches hashes1 (hashes2, async js bundles)
-3. delete js and css files whose file name neither matches hashes1 nor hashes2
-
-## addition
-
-- sclean only clean js and css files, not other static files
+```
+npm run sync
+```

@@ -1,33 +1,24 @@
-let sshConfig = require('./md-sync.server.config');
-let syncOptions = {
-  ignoreErrors: true,
-  sshConfig
-};
+const sshConfig = require('./md-sync.server.config');
 
-let cache = undefined;
-let cacheFile = 'cache-[index].json';
-// let cacheFile = undefined;
+const server = {
+  ignoreErrors: true,
+  sshConfig,
+};
 
 module.exports = [
   {
-    src: './src/**/*',
+    src: ['./src/**/*'],
     remotePath: '/home/senntyou/space/www/ftp/src/',
-    syncOptions,
-    cache,
-    cacheFile
+    server,
   },
   {
-    src: './src/dir1/**/*',
+    src: ['./src/dir1/**/*'],
     remotePath: '/home/senntyou/space/www/ftp/dir1/',
-    syncOptions,
-    cache,
-    cacheFile
+    server,
   },
   {
-    src: './src/dir2/**/*',
+    src: ['./src/dir2/**/*'],
     remotePath: '/home/senntyou/space/www/ftp/dir2/',
-    syncOptions,
-    cache,
-    cacheFile
-  }
+    server,
+  },
 ];

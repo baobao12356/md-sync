@@ -2,83 +2,57 @@
 
 Multiple destinations syncing(sync local files or directories to multiple destinations).
 
-## note
-
-1.  Currently, only support [gulp-ssh](https://github.com/teambition/gulp-ssh).
-
-## install
-
 ```
-npm install --save-dev md-sync
+npm install md-sync --save-dev
 ```
 
-## add command
+**_package.json_**
 
 ```
-# package.json
-
 "scripts": {
-    "sync": "md-sync"
+  "sync": "md-sync"
 }
 ```
 
-## add config
+## config
 
-Add `md-sync.config.js` file to your project root.
+Add a `md-sync.config.js` file to your project root.
 
 ```
 module.exports = [
-    // first destination
-    {
-        src: './src/**/*',
-        remotePath: 'remotePath',
-        srcOptions: {
-            ...
-        },
-        syncOptions: {
-            ignoreErrors: true,
-            sshConfig: {
-                host: 'host',
-                username: 'username',
-                password: 'password'
-            }
-        },
-        cache: true/false,
-        cacheFile: '[index].json'
+  // first destination
+  {
+    src: [globs, options],
+    remotePath: 'remotePath',
+    server: {
+      ignoreErrors: true,
+      sshConfig: {
+        host: 'host',
+        username: 'username',
+        password: 'password'
+      }
     },
-    // second destination
-    ...
+  },
+  // second destination
+  ...
 ];
 ```
 
-1.  `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-2.  `remotePath`: Remote server path.
-3.  `srcOptions`: [gulp src options](https://github.com/gulpjs/gulp/blob/v3.9.1/docs/API.md)
-4.  `syncOptions`: Options for initializing syncing, see [gulp-ssh](https://github.com/teambition/gulp-ssh).
-5.  `cache`: Whether cache files' changing record, thus next time only upload changed files. 
-    - `default`: `true`.
-6.  `cacheFile`: File to record cache hash codes.
-    - `default`: `[index].json`, `[index]` means destination index.    
+1.  `src`: [gulp src](https://github.com/gulpjs/gulp/blob/v4.0.0/docs/API.md#gulpsrcglobs-options) args
+2.  `remotePath`: remote server path
+3.  `server`: options for [gulp-ssh](https://github.com/teambition/gulp-ssh)
 
-## update `.gitignore`
+**_multiple server environments_**
 
-```
-# ignore md-sync workspace
-
-.md-sync
-```
-
-## multiple server environments
-
-If you need to support multiple server environments(test, gray, prod), you can do like this:
+If you need to support multiple server environments(`test`, `gray`, `prod`), you can do like this:
 
 ```
 # package.json
 
 "scripts": {
-    "sync:test": "md-sync --env test",
-    "sync:gray": "md-sync --env gray",
-    "sync:prod": "md-sync --env prod"
+  "sync:test": "md-sync --env test",
+  "sync:gray": "md-sync --env gray",
+  "sync:prod": "md-sync --env prod"
 }
 ```
 
@@ -89,25 +63,22 @@ With [minimist](https://github.com/substack/minimist).
 
 const argv = require('minimist')(process.argv.slice(2));
 
-const envOptions = {
-  test: {
-    ...,
-    
-    cacheFile: 'test-[index].json'
-  },
-  gray: {
-    ...,
-      
-    cacheFile: 'gray-[index].json'
-  },
-  prod: {
-    ...,
-        
-    cacheFile: 'prod-[index].json'
-  }
+const configs = {
+  test: [
+    { ... },
+    ...
+  ],
+  gray: [
+    { ... },
+    ...
+  ],
+  prod: [
+    { ... },
+    ...
+  ],
 };
 
-module.exports = envOptions[argv.env];
+module.exports = configs[argv.env];
 ```
 
 ## do syncing

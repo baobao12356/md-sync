@@ -1,38 +1,42 @@
-const path = require('path');
-const chalk = require('chalk');
-const fse = require('fs-extra');
+import commander from 'commander';
+import gulp from 'gulp';
+import SSH from 'gulp-ssh';
 
-// Ensure `data` get `projectRoot`.
-const data = require('./data');
+import pkg from '../package.json';
+import { cwd } from './app';
+import runTask from './run';
+import { log } from './logger';
 
-console.log(
-  chalk.green(`
-  md-sync start syncing.
-  `)
-);
+const run = () => {
+  const config = require(`${cwd}/md-sync.config.js`); // eslint-disable-line
+  const configs = Array.isArray(config) ? config : [config];
 
-const argv = process.argv;
+  const tasks = [];
 
-process.argv = [argv[0], argv[1], 'md-sync', '--gulpfile', path.join(__dirname, 'gulpfile.js')];
+  configs.forEach(({ src, remotePath, server }, index) => {
+    const name = `sync:${index + 1}`;
 
-require('gulp-cli')(err => {
-  if (err) {
-    console.error(
-      chalk.red(`
-  Error occurred, you should resolve those errors, and try again.
-  `)
-    );
-    console.error(chalk.red(err.stack || err));
-  } else {
-    // Flush record to file.
-    Object.keys(data.record).forEach(key => {
-      fse.outputFileSync(path.join(data.workspace, `${key}.json`), JSON.stringify(data.record[key] || {}));
+    gulp.task(name, () => {
+      const connect = new SSH(server);
+
+      return gulp.src(...src).pipe(connect.dest(remotePath));
     });
 
-    console.log(
-      chalk.green(`
-  md-sync finish all syncing tasks successfully.
-  `)
-    );
-  }
-});
+    tasks.push(name);
+  });
+
+  gulp.task('sync', gulp.series(...tasks));
+
+  runTask('sync', () => {
+    log(`
+  done syncing
+    `);
+  });
+};
+
+commander
+  .version(pkg.version)
+  .allowUnknownOption()
+  .action(run);
+
+commander.parse(process.argv);

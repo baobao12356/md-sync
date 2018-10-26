@@ -1,4 +1,9 @@
-# Changelog
+# changelog
+
+## 0.2.0 [2018-10-26]
+
+- Remove `cache, cacheFile, srcOptions`, modify `syncOptions` by `server`.
+- Use rollup to build.
 
 ## 0.1.2 [2018-07-31]
 

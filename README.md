@@ -2,8 +2,6 @@
 
 Multiple destinations syncing(sync local files or directories to multiple destinations).
 
-## install
-
 ```
 npm install md-sync --save-dev
 ```
